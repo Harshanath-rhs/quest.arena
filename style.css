@@ -1,0 +1,424 @@
+/* ==========================================================
+   WORD QUEST ARENA — shared stylesheet
+   Design system: sky-mist background, sun/coral/leaf/grape
+   accent set, Baloo 2 display + Nunito body + Space Mono HUD.
+   Signature element: the dotted "quest path" + owl mascot,
+   used on the game screen to show progress through questions.
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800;900&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #EAF6FF;
+  --bg-deep: #D8ECFB;
+  --card: #FFFFFF;
+  --ink: #2D3250;
+  --ink-soft: #5B6084;
+  --sun: #FFC93C;
+  --coral: #FF6B6B;
+  --leaf: #4CAF7D;
+  --grape: #7C6BB5;
+  --sky: #4FB6E8;
+
+  --font-display: 'Baloo 2', 'Trebuchet MS', sans-serif;
+  --font-body: 'Nunito', 'Segoe UI', sans-serif;
+  --font-hud: 'Space Mono', monospace;
+
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --shadow-card: 0 10px 0 rgba(45, 50, 80, 0.08), 0 18px 40px rgba(45, 50, 80, 0.12);
+  --shadow-btn: 0 6px 0 rgba(45, 50, 80, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255, 201, 60, 0.16), transparent 40%),
+    radial-gradient(circle at 88% 78%, rgba(124, 107, 181, 0.14), transparent 45%),
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-weight: 700;
+}
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  color: var(--ink);
+  margin: 0;
+}
+
+p { margin: 0; }
+
+button {
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--sky);
+  outline-offset: 3px;
+}
+
+.wrap {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+/* ---------- Brand header ---------- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand .mascot { width: 52px; height: 52px; flex-shrink: 0; }
+
+.brand-text .display { font-size: 1.5rem; line-height: 1; }
+.brand-text .tag {
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 28px 24px;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #fff;
+  background: var(--grape);
+  border-radius: var(--radius-sm);
+  padding: 14px 24px;
+  box-shadow: var(--shadow-btn);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  width: 100%;
+}
+
+.btn:hover { transform: translateY(-2px); }
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 rgba(45, 50, 80, 0.18);
+}
+
+.btn.leaf { background: var(--leaf); }
+.btn.sun { background: var(--sun); color: var(--ink); box-shadow: 0 6px 0 rgba(45,50,80,0.15); }
+.btn.sky { background: var(--sky); }
+.btn.ghost {
+  background: transparent;
+  color: var(--grape);
+  box-shadow: none;
+  border: 2px solid var(--grape);
+}
+
+/* ---------- Form fields ---------- */
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+.field label {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.field input {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 1.05rem;
+  padding: 13px 16px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--bg-deep);
+  background: var(--bg);
+  color: var(--ink);
+}
+.field input:focus { border-color: var(--sky); }
+
+.error-msg {
+  background: #FFEAEA;
+  color: #C43D3D;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  display: none;
+}
+.error-msg.show { display: block; }
+
+/* ---------- Level select (quest doors) ---------- */
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.level-door {
+  border-radius: var(--radius-md);
+  padding: 16px 8px;
+  text-align: center;
+  background: var(--bg);
+  border: 3px solid var(--bg-deep);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--ink-soft);
+  transition: all 0.15s ease;
+}
+.level-door .emoji { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+.level-door.active {
+  border-color: var(--grape);
+  background: #F1ECFB;
+  color: var(--grape);
+  transform: translateY(-2px);
+}
+
+/* ---------- HUD (game screen top bar) ---------- */
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--ink);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  font-family: var(--font-hud);
+}
+.hud .hud-item { text-align: center; }
+.hud .hud-item .val { font-size: 1.25rem; font-weight: 700; }
+.hud .hud-item .lbl {
+  font-size: 0.62rem;
+  color: #A9AEDC;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-weight: 800;
+}
+.hud .hud-item.timer .val { color: var(--sun); }
+.hud .hud-item.streak .val { color: var(--sun); }
+
+/* ---------- Quest path (signature element) ---------- */
+.quest-path {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 2px;
+  overflow-x: auto;
+}
+.quest-path .stop {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg-deep);
+  border: 2px dashed #B9CFE6;
+  flex-shrink: 0;
+  position: relative;
+}
+.quest-path .stop.done {
+  background: var(--leaf);
+  border-style: solid;
+  border-color: var(--leaf);
+}
+.quest-path .stop.wrong {
+  background: var(--coral);
+  border-style: solid;
+  border-color: var(--coral);
+}
+.quest-path .stop.current {
+  background: var(--sun);
+  border-style: solid;
+  border-color: var(--sun);
+  box-shadow: 0 0 0 4px rgba(255, 201, 60, 0.35);
+}
+.quest-path .line {
+  flex: 1;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, #B9CFE6 0 6px, transparent 6px 10px);
+  min-width: 10px;
+}
+
+/* ---------- Question card ---------- */
+.q-card { text-align: left; }
+.q-level-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--grape);
+  background: #F1ECFB;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+}
+.q-text {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  line-height: 1.35;
+  margin-bottom: 20px;
+}
+.answers {
+  display: grid;
+  gap: 10px;
+}
+.answer-btn {
+  text-align: left;
+  background: var(--bg);
+  border: 2px solid var(--bg-deep);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.12s ease;
+}
+.answer-btn .letter {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--card);
+  border: 2px solid var(--bg-deep);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-hud);
+  font-size: 0.78rem;
+  flex-shrink: 0;
+}
+.answer-btn:hover:not(:disabled) { border-color: var(--grape); transform: translateX(2px); }
+.answer-btn.correct { background: #E8F7EF; border-color: var(--leaf); }
+.answer-btn.correct .letter { background: var(--leaf); border-color: var(--leaf); color: #fff; }
+.answer-btn.wrong { background: #FFEDED; border-color: var(--coral); }
+.answer-btn.wrong .letter { background: var(--coral); border-color: var(--coral); color: #fff; }
+.answer-btn:disabled { cursor: default; }
+
+/* ---------- Mascot + speech bubble ---------- */
+.mascot-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 60px;
+}
+.mascot-row .mascot { width: 56px; height: 56px; flex-shrink: 0; }
+.speech-bubble {
+  background: var(--card);
+  border: 2px solid var(--bg-deep);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+  position: relative;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.speech-bubble.show { opacity: 1; transform: translateY(0); }
+.speech-bubble.good { color: #2E8058; border-color: var(--leaf); background: #EFFBF4; }
+.speech-bubble.bad { color: #C43D3D; border-color: var(--coral); background: #FFF3F3; }
+
+/* ---------- Leaderboard ---------- */
+.board-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  margin-bottom: 8px;
+}
+.board-row .rank {
+  font-family: var(--font-hud);
+  font-weight: 700;
+  width: 28px;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.board-row.top1 { background: #FFF6DD; border: 2px solid var(--sun); }
+.board-row.top2 { background: #F1F1F6; border: 2px solid #C7C9DA; }
+.board-row.top3 { background: #FBEDE2; border: 2px solid #E3A87C; }
+.board-row .medal { font-size: 1.2rem; width: 28px; text-align: center; }
+.board-row .who { flex: 1; }
+.board-row .who .name { font-family: var(--font-display); font-size: 1rem; }
+.board-row .who .cls { font-size: 0.75rem; color: var(--ink-soft); font-weight: 700; }
+.board-row .pts {
+  font-family: var(--font-hud);
+  font-weight: 700;
+  color: var(--grape);
+}
+
+/* ---------- Results ---------- */
+.result-hero { text-align: center; padding: 10px 0 4px; }
+.result-hero .score-big {
+  font-family: var(--font-hud);
+  font-size: 3rem;
+  color: var(--grape);
+  line-height: 1;
+}
+.result-hero .score-lbl {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-top: 6px;
+}
+
+/* ---------- Loading / empty states ---------- */
+.state-msg {
+  text-align: center;
+  color: var(--ink-soft);
+  font-weight: 700;
+  padding: 30px 10px;
+}
+
+.spinner {
+  width: 34px; height: 34px;
+  border: 4px solid var(--bg-deep);
+  border-top-color: var(--grape);
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- Small helpers ---------- */
+.center { text-align: center; }
+.mt { margin-top: 14px; }
+.row-gap { display: flex; flex-direction: column; gap: 10px; }
+.muted { color: var(--ink-soft); font-size: 0.85rem; }
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 420px) {
+  .q-text { font-size: 1.12rem; }
+  .result-hero .score-big { font-size: 2.4rem; }
+}
