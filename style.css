@@ -38,13 +38,20 @@ html, body {
   padding: 0;
   min-height: 100%;
   background:
-    radial-gradient(circle at 12% 18%, rgba(255, 201, 60, 0.16), transparent 40%),
-    radial-gradient(circle at 88% 78%, rgba(124, 107, 181, 0.14), transparent 45%),
+    radial-gradient(circle at 10% 12%, rgba(255, 201, 60, 0.30), transparent 34%),
+    radial-gradient(circle at 92% 8%, rgba(79, 182, 232, 0.26), transparent 36%),
+    radial-gradient(circle at 88% 82%, rgba(124, 107, 181, 0.26), transparent 40%),
+    radial-gradient(circle at 6% 90%, rgba(76, 175, 125, 0.22), transparent 38%),
     var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
   font-weight: 700;
+  overflow-x: hidden;
 }
+
+/* Defensive sizing: every SVG must respect its CSS box, on every
+   browser/viewport — prevents oversized icons on mobile webviews. */
+svg { display: block; max-width: 100%; }
 
 h1, h2, h3, .display {
   font-family: var(--font-display);
@@ -69,13 +76,13 @@ a:focus-visible {
 }
 
 .wrap {
-  max-width: 720px;
+  max-width: 560px;
   margin: 0 auto;
-  padding: 28px 20px 60px;
+  padding: clamp(16px, 5vw, 28px) clamp(14px, 4vw, 20px) 60px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: clamp(16px, 4vw, 22px);
 }
 
 /* ---------- Brand header ---------- */
@@ -83,13 +90,32 @@ a:focus-visible {
   display: flex;
   align-items: center;
   gap: 12px;
+  background: linear-gradient(120deg, #FFE7A8 0%, #FFD3E0 45%, #C9E4FF 100%);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px;
+  box-shadow: var(--shadow-card);
 }
 
-.brand .mascot { width: 52px; height: 52px; flex-shrink: 0; }
+/* Fixed-size frame is a second line of defense against an SVG
+   ever rendering larger than intended on any device. */
+.mascot-frame {
+  width: clamp(38px, 11vw, 52px);
+  height: clamp(38px, 11vw, 52px);
+  flex-shrink: 0;
+  overflow: hidden;
+  display: block;
+}
+.brand .mascot,
+.mascot-frame .mascot {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
 
-.brand-text .display { font-size: 1.5rem; line-height: 1; }
+.brand-text { min-width: 0; flex: 1; }
+.brand-text .display { font-size: clamp(1.15rem, 5vw, 1.5rem); line-height: 1.1; }
 .brand-text .tag {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   color: var(--ink-soft);
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -100,7 +126,8 @@ a:focus-visible {
   background: var(--card);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-card);
-  padding: 28px 24px;
+  padding: clamp(18px, 5vw, 28px) clamp(16px, 4.5vw, 24px);
+  width: 100%;
 }
 
 /* ---------- Buttons ---------- */
@@ -113,7 +140,7 @@ a:focus-visible {
   font-weight: 700;
   font-size: 1.05rem;
   color: #fff;
-  background: var(--grape);
+  background: linear-gradient(135deg, var(--grape), #9583D4);
   border-radius: var(--radius-sm);
   padding: 14px 24px;
   box-shadow: var(--shadow-btn);
@@ -127,9 +154,9 @@ a:focus-visible {
   box-shadow: 0 2px 0 rgba(45, 50, 80, 0.18);
 }
 
-.btn.leaf { background: var(--leaf); }
-.btn.sun { background: var(--sun); color: var(--ink); box-shadow: 0 6px 0 rgba(45,50,80,0.15); }
-.btn.sky { background: var(--sky); }
+.btn.leaf { background: linear-gradient(135deg, var(--leaf), #6BCB9A); }
+.btn.sun { background: linear-gradient(135deg, var(--sun), #FFDD7A); color: var(--ink); box-shadow: 0 6px 0 rgba(45,50,80,0.15); }
+.btn.sky { background: linear-gradient(135deg, var(--sky), #7ECBEF); }
 .btn.ghost {
   background: transparent;
   color: var(--grape);
@@ -172,39 +199,47 @@ a:focus-visible {
 /* ---------- Level select (quest doors) ---------- */
 .level-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 .level-door {
   border-radius: var(--radius-md);
-  padding: 16px 8px;
+  padding: 14px 4px;
   text-align: center;
-  background: var(--bg);
-  border: 3px solid var(--bg-deep);
   font-family: var(--font-display);
   font-weight: 700;
-  color: var(--ink-soft);
+  font-size: 0.92rem;
   transition: all 0.15s ease;
+  border: 3px solid transparent;
+  opacity: 0.55;
 }
-.level-door .emoji { font-size: 1.6rem; display: block; margin-bottom: 4px; }
+.level-door .emoji { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+
+.level-door[data-level="Easy"]   { background: #E3F6EC; color: #2E8058; }
+.level-door[data-level="Medium"] { background: #E4F4FC; color: #1F7EA8; }
+.level-door[data-level="Hard"]   { background: #FFE8E2; color: #D2503C; }
+
 .level-door.active {
-  border-color: var(--grape);
-  background: #F1ECFB;
-  color: var(--grape);
-  transform: translateY(-2px);
+  opacity: 1;
+  transform: translateY(-2px) scale(1.03);
 }
+.level-door[data-level="Easy"].active   { border-color: var(--leaf); box-shadow: 0 6px 0 rgba(76,175,125,0.25); }
+.level-door[data-level="Medium"].active { border-color: var(--sky); box-shadow: 0 6px 0 rgba(79,182,232,0.25); }
+.level-door[data-level="Hard"].active   { border-color: var(--coral); box-shadow: 0 6px 0 rgba(255,107,107,0.25); }
 
 /* ---------- HUD (game screen top bar) ---------- */
 .hud {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--ink);
+  background: linear-gradient(135deg, #2D3250, #4B4F80);
   color: #fff;
   border-radius: var(--radius-md);
-  padding: 14px 18px;
+  padding: clamp(10px, 3vw, 14px) clamp(10px, 3vw, 18px);
   font-family: var(--font-hud);
+  box-shadow: var(--shadow-card);
 }
+.hud .hud-item .val { font-size: clamp(1.02rem, 4vw, 1.25rem); }
 .hud .hud-item { text-align: center; }
 .hud .hud-item .val { font-size: 1.25rem; font-weight: 700; }
 .hud .hud-item .lbl {
@@ -323,7 +358,7 @@ a:focus-visible {
   gap: 12px;
   min-height: 60px;
 }
-.mascot-row .mascot { width: 56px; height: 56px; flex-shrink: 0; }
+.mascot-row .mascot-frame { width: clamp(42px, 12vw, 56px); height: clamp(42px, 12vw, 56px); }
 .speech-bubble {
   background: var(--card);
   border: 2px solid var(--bg-deep);
@@ -419,6 +454,15 @@ a:focus-visible {
 
 /* ---------- Responsive ---------- */
 @media (max-width: 420px) {
-  .q-text { font-size: 1.12rem; }
+  .q-text { font-size: 1.1rem; }
   .result-hero .score-big { font-size: 2.4rem; }
+  .brand { padding: 12px 14px; gap: 10px; }
+  .level-door { padding: 12px 2px; font-size: 0.8rem; }
+  .level-door .emoji { font-size: 1.3rem; }
+  .board-row { padding: 10px 10px; gap: 8px; }
+  .answer-btn { padding: 12px 14px; font-size: 0.94rem; }
+}
+
+@media (max-width: 340px) {
+  .level-grid { grid-template-columns: 1fr; }
 }
